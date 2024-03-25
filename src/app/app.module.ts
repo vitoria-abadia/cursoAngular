@@ -1,16 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
+import { AppRoutingModule } from './app.routing.module';
 import { CursosService } from './cursos/cursos.service';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { routes } from './app.routes';
+import { CursosModule } from './cursos/cursos.module';
 
 @NgModule({
   declarations: [],
   imports: [ 
-    BrowserModule, 
+    BrowserModule,
+    FormsModule,
+    CursosModule,
+    AppRoutingModule
   ], 
-  providers: [CursosService, 
-  provideRouter(routes, withComponentInputBinding())],
+  providers: [CursosService],
+  
 })
 export class AppModule { }

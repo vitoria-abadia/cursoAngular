@@ -1,14 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Router } from 'express';
-import { StringifyOptions } from 'querystring';
-import { Subscribable, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
 import { CursosService } from '../cursos.service';
 
 @Component({
   selector: 'app-curso-detalhe',
-  standalone: true,
-  imports: [],
+  standalone: false,
   templateUrl: './curso-detalhe.component.html',
   styleUrl: './curso-detalhe.component.css'
 })
@@ -21,9 +19,7 @@ export class CursoDetalheComponent implements OnInit{
   constructor(
     private route: ActivatedRoute, 
     private router: Router, 
-    private cursosService: CursosService
-     ) { 
-  }
+    private cursosService: CursosService) { }
 
   ngOnInit() { 
     this.inscricao = this.route.params.subscribe(
@@ -33,7 +29,7 @@ export class CursoDetalheComponent implements OnInit{
         this.curso = this.cursosService.getCurso(this.id);
 
         if (this.curso == null){
-          //this.router.navigate(['/cursos/naoEncontrado']);
+          this.router.navigate(['/cursos/naoEncontrado']);
          }
       }
     )
