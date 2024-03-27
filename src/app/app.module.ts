@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 
-import { AppRoutingModule } from './app.routing.module';
-import { CursosService } from './cursos/cursos.service';
-import { CursosModule } from './cursos/cursos.module';
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
+import { AlunosModule } from './alunos/alunos.module';
+import { AlunosRoutingModule } from './alunos/alunos.routing.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [],
-  imports: [ 
-    BrowserModule,
-    FormsModule,
-    CursosModule,
-    AppRoutingModule
-  ], 
-  providers: [CursosService],
+  imports: [
+    CommonModule, 
+    BrowserModule, 
+    AlunosModule, 
+    AlunosRoutingModule, 
+    FormsModule
+  ]
   
 })
 export class AppModule { }

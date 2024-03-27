@@ -1,48 +1,44 @@
+
 import { Component, OnInit } from '@angular/core';
 import { NgFor } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-
-import { CursosService } from './cursos.service';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { CursosModule } from './cursos.module';
+import { CursosService } from './cursos.service';
 
 @Component({
   selector: 'app-cursos',
-  standalone: false,
+  standalone: true,
+  imports: [RouterLink, NgFor, RouterOutlet],
   templateUrl: './cursos.component.html',
   styleUrl: './cursos.component.css'
 })
 export class CursosComponent implements OnInit {
 
-  cursos: any[] | undefined ;
+  cursos: any[] = [] ;
   pagina!: number;
   inscricao: Subscription | undefined;
 
     constructor(
       private cursosService: CursosService,
-      private route: ActivatedRoute, 
-      private router: Router
-      ){ 
-    }
+      private activeRoute: ActivatedRoute, 
+      private router: Router) { }
 
-    ngOnInit() { 
+    ngOnInit(): void {
       this.cursos = this.cursosService.getCursos();
 
-      this.inscricao = this.route.queryParams.subscribe(
+      this.inscricao = this.activeRoute.queryParams.subscribe(
         (queryParams: any) => {
           this.pagina = queryParams['pagina'];
         }
       );
     }
 
-    ngOnDestroy(): void {
-      this.inscricao?.unsubscribe();
-    }
-
-    proximaPagina() { 
-      //this.pagina++;
-      this.router.navigate(['/cursos'], 
+  proximaPagina() { 
+    this.router.navigate(['/cursos'], 
       {queryParams: {'pagina': ++this.pagina}});
+    }
+    ngOnDestroy(): void {
+          this.inscricao?.unsubscribe();
+       }
   }
 
-}
