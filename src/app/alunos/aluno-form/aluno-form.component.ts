@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AlunosService } from '../alunos.service';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-aluno-form',
-  standalone: false,
+  standalone: true,
+  imports: [FormsModule],
   templateUrl: './aluno-form.component.html',
   styleUrl: './aluno-form.component.css'
 })

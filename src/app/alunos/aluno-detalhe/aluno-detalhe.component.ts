@@ -31,7 +31,8 @@ export class AlunoDetalheComponent implements OnInit, OnDestroy {
   }
 
   editarContato(){
-    this.router.navigate(['/alunos', this.aluno.id, 'editar']);
+    console.log(this.aluno)
+    this.router.navigate(['alunos', this.aluno.id, 'editar']);
   }
   
   ngOnDestroy(): void {
