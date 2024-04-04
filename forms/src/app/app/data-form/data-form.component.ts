@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-data-form',
-  standalone: true,
-  imports: [],
+  standalone: false,
   templateUrl: './data-form.component.html',
   styleUrl: './data-form.component.css'
 })
