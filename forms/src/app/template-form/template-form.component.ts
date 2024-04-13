@@ -38,7 +38,5 @@ export class TemplateFormComponent implements OnInit {
         'has-error': this.verificaValidTouched(campo), 
         'has-feedback': this.verificaValidTouched(campo)
         }
-    
-   
   }
 }

@@ -1,11 +1,78 @@
 import { Component } from '@angular/core';
+import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormDebugComponent } from '../form-debug/form-debug.component';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-data-form',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormDebugComponent],
   templateUrl: './data-form.component.html',
   styleUrl: './data-form.component.css'
 })
 export class DataFormComponent {
 
+  form!: FormGroup;
+
+constructor(
+  private http: HttpClient, 
+  private formBuilder: FormBuilder ) { }
+
+ngOnInit() {
+  this.form = this.formBuilder.group({ 
+    nome: [null, Validators.required], 
+    email: [null, [Validators.required, Validators.email]],
+
+      cep: [null, Validators.required],
+      numero: [null, Validators.required],
+      complemento: [null],
+      rua: [null, Validators.required],
+      bairro: [null, Validators.required],
+      cidade: [null, Validators.required],
+      estado: [null, Validators.required]
+    }
+  )
+}
+
+onSubmit() {
+  console.log(this.form.value);
+
+  this.http.post('https://httpbin.org/post', JSON.stringify(this.form.value))
+    .pipe(map(res => res))
+    .subscribe({
+      next: dados => {
+        console.log(dados);
+        this.reset();
+      },
+      error: error => {
+        console.error('Erro ao enviar o formulário:', error);
+        alert('Erro ao enviar o formulário!');
+      }
+    });
+}
+
+reset() {
+  this.form.reset();
+}
+
+verificaValidTouched(campo: any) { 
+  return !this.form.get(campo)?.valid && this.form.get(campo)?.touched;
+}
+
+verificaEmailInvalido() { 
+  let campoEmail = this.form.get('email');
+    if(campoEmail?.errors){ 
+      return campoEmail.errors['email'] 
+      && campoEmail.touched;
+    }
+  }
+
+aplicaCssErro(campo: any) { 
+  return {
+    'has-error': this.verificaValidTouched(campo), 
+    'has-feedback': this.verificaValidTouched(campo)
+    }
+  }
 }

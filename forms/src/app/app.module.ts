@@ -5,11 +5,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 import { AppRoutingModule } from './app.routes';
-import { DataFormComponent } from './app/data-form/data-form.component';
+import { DataFormComponent } from './data-form/data-form.component';
+import { TemplateFormComponent } from './template-form/template-form.component';
+import { FormDebugComponent } from './form-debug/form-debug.component';
 
 @NgModule({
   declarations: [
-    DataFormComponent, 
   ],
   imports: [
     BrowserModule, 
