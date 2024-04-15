@@ -4,6 +4,9 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormDebugComponent } from '../form-debug/form-debug.component';
 import { map } from 'rxjs';
+import { DropdownService } from '../shared/service/dropdown.service';
+import { EstadosBR } from '../shared/models/models';
+import { CepService } from '../shared/service/consulta-cep.service';
 
 @Component({
   selector: 'app-data-form',
@@ -15,12 +18,21 @@ import { map } from 'rxjs';
 export class DataFormComponent {
 
   form!: FormGroup;
+  estados!: EstadosBR[];
 
   constructor(
     private http: HttpClient,
-    private formBuilder: FormBuilder) { }
+    private formBuilder: FormBuilder, 
+    private dropdown: DropdownService, 
+    private cepService: CepService) { }
 
   ngOnInit() {
+
+    this.dropdown.getEstadosBr()
+      .subscribe(dados => { this.estados = dados; 
+        console.log(dados);
+      })
+
     this.form = this.formBuilder.group({
       nome: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
@@ -38,23 +50,12 @@ export class DataFormComponent {
   }
 
   consultaCEP() {
-    let cepControl = this.form.get('endereco.cep');
-    if (cepControl) {
-      let cep = cepControl.value;
-      cep = cep.replace(/\D/g, '');
-      if (cep !== '') {
-        var validacep = /^[0-9]{8}$/;
-        if (validacep.test(cep)) {
-          this.resetaDadosForm();
-          this.http.get(`//viacep.com.br/ws/${cep}/json`)
-            .pipe(
-              map((dados: any) => dados)
-            )
-            .subscribe((dados: any) => this.populaDadosForm(dados));
-        }
-      }
+    const cep = this.form.get('endereco.cep')?.value;
+  
+    if (cep != null && cep !== '') { 
+      this.cepService.consultaCEP(cep).subscribe((dados: any) => this.populaDadosForm(dados));
     } else {
-      console.error('Campo de CEP não encontrado no formulário.');
+      console.error('Campo de CEP não encontrado ou está vazio no formulário.');
     }
   }
 

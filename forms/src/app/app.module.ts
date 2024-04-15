@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app.routes';
 import { DataFormComponent } from './data-form/data-form.component';
 import { TemplateFormComponent } from './template-form/template-form.component';
 import { FormDebugComponent } from './form-debug/form-debug.component';
+import { DropdownService } from './shared/service/dropdown.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,9 @@ import { FormDebugComponent } from './form-debug/form-debug.component';
     HttpClientModule, 
     AppRoutingModule, 
     RouterModule, 
-    RouterOutlet
-  ]
+    RouterOutlet, 
+    
+  ], 
+  providers: [DropdownService]
 })
 export class AppModule { }

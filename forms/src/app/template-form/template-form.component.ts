@@ -1,7 +1,9 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
+import { FormsModule, NgForm, NgModel } from '@angular/forms';
 import { FormDebugComponent } from "../form-debug/form-debug.component";
+import { HttpClient } from '@angular/common/http';
+import { CepService } from '../shared/service/consulta-cep.service';
 
 @Component({
     selector: 'app-template-form',
@@ -12,31 +14,51 @@ import { FormDebugComponent } from "../form-debug/form-debug.component";
 })
 export class TemplateFormComponent implements OnInit {
 
-  usuario: any = { 
-    nome: null, 
+  usuario: any = {
+    nome: null,
     email: null
-  }
+  };
 
-  onSubmit(form: any) { 
-    console.log(form);
-
-   // console.log(this.usuario);
-  }
-
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private cepService: CepService
+  ) { }
 
   ngOnInit(): void {
-    
   }
 
-  verificaValidTouched(campo: { valid: any; touched: any; }) { 
+  onSubmit(form: NgForm) {
+    console.log(form.value);
+  }
+
+  consultaCEP(cep: string, form: NgForm) {
+    cep = cep.replace(/\D/g, '');
+
+    if (cep !== '') {
+      this.cepService.consultaCEP(cep).subscribe(dados => this.populaDadosForm(dados, form));
+    }
+  }
+
+  populaDadosForm(dados: any, form: NgForm) {
+    form.form.patchValue({
+      endereco: {
+        rua: dados.logradouro,
+        complemento: dados.complemento,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf
+      }
+    });
+  }
+
+  verificaValidTouched(campo: { valid: any; touched: any; }) {
     return !campo.valid && campo.touched;
   }
 
-  aplicaCssErro(campo: any) { 
+  aplicaCssErro(campo: any) {
     return {
-        'has-error': this.verificaValidTouched(campo), 
-        'has-feedback': this.verificaValidTouched(campo)
-        }
+      'has-error': this.verificaValidTouched(campo),
+      'has-feedback': this.verificaValidTouched(campo)
+    };
   }
 }
