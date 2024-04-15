@@ -3,82 +3,82 @@
         <div class="form-group" [ngClass]="aplicaCssErro('nome')">
             <label for="nome" class="form-label">Nome</label>
             <input type="text" class="form-control" name="nome" formControlName="nome" id="nome" placeholder="Nome"
-              [class.is-invalid]="verificaValidTouched('nome')">
-               <div *ngIf="verificaValidTouched('nome')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('nome')">
+            <div *ngIf="verificaValidTouched('nome')" class="invalid-feedback">
                 <p>Nome é obrigatório</p>
-            </div> 
+            </div>
         </div>
 
         <div class="form-group" [ngClass]="aplicaCssErro('email')">
             <label for="email" class="form-label">E-mail</label>
             <input type="email" class="form-control" formControlName="email" id="email" placeholder="nome@email.com"
                 [class.is-invalid]="verificaValidTouched('email')">
-           <div *ngIf="verificaValidTouched('email')" class="invalid-feedback">
+            <div *ngIf="verificaValidTouched('email')" class="invalid-feedback">
                 <p>E-mail é obrigatório</p>
             </div>
         </div>
     </div>
 
-    <div class="form-group row">
-        <div class="col-md-2" [ngClass]="aplicaCssErro('cep')">
+    <div class="form-group row" formGroupName="endereco">
+        <div class="col-md-2" [ngClass]="aplicaCssErro('endereco.cep')">
             <label for="cep" class="form-label">CEP</label>
             <input type="text" class="form-control" id="cep" name="cep" formControlName="cep"
-                [class.is-invalid]="verificaValidTouched('cep')">
-            <div *ngIf="verificaValidTouched('cep')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('endereco.cep')" (blur)="consultaCEP()">
+            <div *ngIf="verificaValidTouched('endereco.cep')" class="invalid-feedback">
                 <p>CEP inválido</p>
             </div>
         </div>
 
-        <div class="col-md-4" [ngClass]="aplicaCssErro('numero')">
+        <div class="col-md-4" [ngClass]="aplicaCssErro('endereco.numero')">
             <label for="numero" class="form-label">Número</label>
             <input type="text" class="form-control" id="numero" name="numero" formControlName="numero"
-               [class.is-invalid]="verificaValidTouched('numero')">
-            <div *ngIf="verificaValidTouched('numero')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('endereco.numero')">
+            <div *ngIf="verificaValidTouched('endereco.numero')" class="invalid-feedback">
                 <p>Número é obrigatório</p>
             </div>
         </div>
 
         <div class="col-md-6">
-            <label for="Complemento" class="form-label">Complemento</label>
+            <label for="complemento" class="form-label">Complemento</label>
             <input type="text" class="form-control" id="complemento" name="complemento" formControlName="complemento">
         </div>
     </div>
 
-    <div class="form-group row">
-        <div class="col-12" [ngClass]="aplicaCssErro('rua')">
+    <div class="form-group row" formGroupName="endereco">
+        <div class="col-12" [ngClass]="aplicaCssErro('endereco.rua')">
             <label for="rua" class="form-label">Rua</label>
             <input type="text" class="form-control" id="rua" name="rua" formControlName="rua"
-                placeholder="Apartment, studio, or floor" [class.is-invalid]="verificaValidTouched('rua')">
-            <div *ngIf="verificaValidTouched('cep')" class="invalid-feedback">
+                placeholder="Apartment, studio, or floor" [class.is-invalid]="verificaValidTouched('endereco.rua')">
+            <div *ngIf="verificaValidTouched('endereco.rua')" class="invalid-feedback">
                 <p>Nome da rua é obrigatório</p>
             </div>
         </div>
     </div>
 
-    <div class="form-group row">
-        <div class="col-md-6" [ngClass]="aplicaCssErro('bairro')">
+    <div class="form-group row" formGroupName="endereco">
+        <div class="col-md-6" [ngClass]="aplicaCssErro('endereco.bairro')">
             <label for="bairro" class="form-label">Bairro</label>
             <input type="text" class="form-control" id="bairro" name="bairro" formControlName="bairro"
-               [class.is-invalid]="verificaValidTouched('bairro')">
-           <div *ngIf="verificaValidTouched('bairro')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('endereco.bairro')">
+            <div *ngIf="verificaValidTouched('endereco.bairro')" class="invalid-feedback">
                 <p>Bairro é obrigatório</p>
-            </div> 
+            </div>
         </div>
 
-        <div class="col-md-3" [ngClass]="aplicaCssErro('cidade')">
+        <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.cidade')">
             <label for="cidade" class="form-label">Cidade</label>
             <input type="text" class="form-control" id="cidade" name="cidade" formControlName="cidade"
-                [class.is-invalid]="verificaValidTouched('cidade')">
-              <div *ngIf="verificaValidTouched('cidade')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('endereco.cidade')">
+            <div *ngIf="verificaValidTouched('endereco.cidade')" class="invalid-feedback">
                 <p>Cidade é obrigatório</p>
             </div>
         </div>
 
-        <div class="col-md-3" [ngClass]="aplicaCssErro('estado')">
-            <label for="inputState" class="form-label">Estado</label>
+        <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
+            <label for="estado" class="form-label">Estado</label>
             <input type="text" class="form-control" id="estado" name="estado" formControlName="estado"
-             [class.is-invalid]="verificaValidTouched('estado')"> 
-            <div *ngIf="verificaValidTouched('estado')" class="invalid-feedback">
+                [class.is-invalid]="verificaValidTouched('endereco.estado')">
+            <div *ngIf="verificaValidTouched('endereco.estado')" class="invalid-feedback">
                 <p>Estado é obrigatório</p>
             </div>
         </div>

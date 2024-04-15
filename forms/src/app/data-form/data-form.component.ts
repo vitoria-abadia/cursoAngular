@@ -24,7 +24,7 @@ ngOnInit() {
   this.form = this.formBuilder.group({ 
     nome: [null, Validators.required], 
     email: [null, [Validators.required, Validators.email]],
-
+    endereco: this.formBuilder.group({
       cep: [null, Validators.required],
       numero: [null, Validators.required],
       complemento: [null],
@@ -32,8 +32,57 @@ ngOnInit() {
       bairro: [null, Validators.required],
       cidade: [null, Validators.required],
       estado: [null, Validators.required]
+    }),
     }
   )
+}
+
+consultaCEP() {
+  let cepControl = this.form.get('endereco.cep');
+  if (cepControl) {
+    let cep = cepControl.value;
+    cep = cep.replace(/\D/g, '');
+    if (cep !== '') {
+      var validacep = /^[0-9]{8}$/;
+      if (validacep.test(cep)) { 
+        this.resetaDadosForm(); 
+        this.http.get(`//viacep.com.br/ws/${cep}/json`)
+          .pipe(
+            map((dados: any) => dados)
+          )
+          .subscribe((dados: any) => this.populaDadosForm(dados));
+      }
+    }
+  } else {
+    console.error('Campo de CEP não encontrado no formulário.');
+  }
+}
+
+
+populaDadosForm(dados: { logradouro: any; complemento: any; bairro: any; localidade: any; uf: any; gia: any }) {
+  this.form.patchValue({
+    endereco: {
+      rua: dados.logradouro,
+      numero: dados.gia,
+      // cep: dados.cep, 
+      complemento: dados.complemento,
+      bairro: dados.bairro,
+      cidade: dados.localidade,
+      estado: dados.uf
+    }
+  });
+}
+
+resetaDadosForm() {
+  this.form.patchValue({
+    endereco: {
+      rua: null,
+      complemento: null,
+      bairro: null,
+      cidade: null,
+      estado: null
+    }
+  });
 }
 
 onSubmit() {
