@@ -19,6 +19,7 @@ export class DataFormComponent {
 
   form!: FormGroup;
   estados!: Observable<EstadosBR[]>;
+  cargos!: any[];
 
   constructor(
     private http: HttpClient,
@@ -29,6 +30,7 @@ export class DataFormComponent {
   ngOnInit() {
 
     this.estados = this.dropdown.getEstadosBr();
+    this.cargos = this.dropdown.getCargos();
     /*this.dropdown.getEstadosBr()
       .subscribe(dados => { this.estados = dados; 
         console.log(dados);
@@ -46,8 +48,8 @@ export class DataFormComponent {
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
       }),
-    }
-    )
+      cargo: [null]
+    })
   }
 
   consultaCEP() {
@@ -143,5 +145,14 @@ export class DataFormComponent {
       'has-error': this.verificaValidTouched(campo),
       'has-feedback': this.verificaValidTouched(campo)
     }
+  }
+
+  setarCargo() { 
+    const cargo =  { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl'}; 
+    this.form.get('cargo')?.setValue(cargo)
+  }
+
+  compararCargos(obj1: { nome: any; nivel: any; }, obj2: { nome: any; nivel: any; }) {
+    return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
   }
 }
