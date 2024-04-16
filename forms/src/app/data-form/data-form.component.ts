@@ -20,6 +20,7 @@ export class DataFormComponent {
   form!: FormGroup;
   estados!: Observable<EstadosBR[]>;
   cargos!: any[];
+  tecnologias!: any[];
 
   constructor(
     private http: HttpClient,
@@ -31,6 +32,7 @@ export class DataFormComponent {
 
     this.estados = this.dropdown.getEstadosBr();
     this.cargos = this.dropdown.getCargos();
+    this.tecnologias = this.dropdown.getTecnologias();
     /*this.dropdown.getEstadosBr()
       .subscribe(dados => { this.estados = dados; 
         console.log(dados);
@@ -48,7 +50,8 @@ export class DataFormComponent {
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
       }),
-      cargo: [null]
+      cargo: [null], 
+      tecnologias: [null]
     })
   }
 
@@ -155,4 +158,9 @@ export class DataFormComponent {
   compararCargos(obj1: { nome: any; nivel: any; }, obj2: { nome: any; nivel: any; }) {
     return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
   }
+
+  setarTecnologias() { 
+    this.form.get('tecnologias')?.setValue(['java', 'javaScript'])
+  }
+
 }
