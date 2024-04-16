@@ -76,8 +76,10 @@
 
         <div class="col-md-3" [ngClass]="aplicaCssErro('endereco.estado')">
             <label for="estado" class="form-label">Estado</label>
-            <input type="text" class="form-control" id="estado" name="estado" formControlName="estado"
+            <select class="form-control" id="estado" name="estado" formControlName="estado"
                 [class.is-invalid]="verificaValidTouched('endereco.estado')">
+                <option *ngFor="let estado of estados | async" [value]="estado.sigla"> {{ estado.nome }}</option>
+            </select>
             <div *ngIf="verificaValidTouched('endereco.estado')" class="invalid-feedback">
                 <p>Estado é obrigatório</p>
             </div>
