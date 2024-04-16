@@ -21,6 +21,7 @@ export class DataFormComponent {
   estados!: Observable<EstadosBR[]>;
   cargos!: any[];
   tecnologias!: any[];
+  newsletterOp!: any[];
 
   constructor(
     private http: HttpClient,
@@ -33,6 +34,8 @@ export class DataFormComponent {
     this.estados = this.dropdown.getEstadosBr();
     this.cargos = this.dropdown.getCargos();
     this.tecnologias = this.dropdown.getTecnologias();
+    this.newsletterOp = this.dropdown.getNewsletter();
+
     /*this.dropdown.getEstadosBr()
       .subscribe(dados => { this.estados = dados; 
         console.log(dados);
@@ -51,7 +54,8 @@ export class DataFormComponent {
         estado: [null, Validators.required]
       }),
       cargo: [null], 
-      tecnologias: [null]
+      tecnologias: [null], 
+      newsletter: ['s']
     })
   }
 

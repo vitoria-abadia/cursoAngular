@@ -31,6 +31,13 @@ export class DropdownService {
       { nome: 'TypeScript', desc: 'TypeScript'}, 
     ]
   }
+
+  getNewsletter() { 
+    return [
+      { valor: 's', desc: 'Sim'}, 
+      { valor: 'n', desc: 'Não'}
+    ]
+  }
 }
 
 
