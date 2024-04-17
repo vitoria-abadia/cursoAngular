@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, Validators, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormDebugComponent } from '../form-debug/form-debug.component';
 import { Observable, map } from 'rxjs';
 import { DropdownService } from '../shared/service/dropdown.service';
 import { EstadosBR } from '../shared/models/models';
 import { CepService } from '../shared/service/consulta-cep.service';
+import { FormValidations } from '../shared/form.validations';
+import { get } from 'http';
 
 @Component({
   selector: 'app-data-form',
@@ -23,10 +25,12 @@ export class DataFormComponent {
   tecnologias!: any[];
   newsletterOp!: any[];
 
+  frameworks = ['Angular', 'React', 'Vue', 'Sencha']
+
   constructor(
     private http: HttpClient,
-    private formBuilder: FormBuilder, 
-    private dropdown: DropdownService, 
+    private formBuilder: FormBuilder,
+    private dropdown: DropdownService,
     private cepService: CepService) { }
 
   ngOnInit() {
@@ -44,8 +48,9 @@ export class DataFormComponent {
     this.form = this.formBuilder.group({
       nome: [null, Validators.required],
       email: [null, [Validators.required, Validators.email]],
+      ConfirmarEmail: [null,  [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
-        cep: [null, Validators.required],
+        cep: [null, [Validators.required, FormValidations.cepValidator ]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -53,17 +58,27 @@ export class DataFormComponent {
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
       }),
-      cargo: [null], 
-      tecnologias: [null], 
-      newsletter: ['s'], 
-      termos: [null, Validators.pattern('true')]
-    })
-  }
+      cargo: [null],
+      tecnologias: [null],
+      newsletter: ['s'],
+      termos: [null, Validators.pattern('true')],
+      frameworks: this.buildFrameworks()
+  })
+}
 
-  consultaCEP() {
+buildFrameworks() { 
+  const values = this.frameworks.map(v => new FormControl(false));
+  return this.formBuilder.array(values, FormValidations.requiredMinCheckbox(1));
+}
+
+getFrameworksControls() {
+  return this.form.get('frameworks') ? (<FormArray>this.form.get('frameworks')).controls : null;
+}
+
+consultaCEP() {
     const cep = this.form.get('endereco.cep')?.value;
-  
-    if (cep != null && cep !== '') { 
+
+    if (cep != null && cep !== '') {
       this.cepService.consultaCEP(cep).subscribe((dados: any) => this.populaDadosForm(dados));
     } else {
       console.error('Campo de CEP não encontrado ou está vazio no formulário.');
@@ -100,8 +115,18 @@ export class DataFormComponent {
   onSubmit() {
     console.log(this.form.value);
 
+    let valueSubmit = Object.assign({}, this.form.value);
+
+    valueSubmit = Object.assign(valueSubmit, {
+      frameworks: valueSubmit.frameworks
+        .map((v: any, i: any) => v ? this.frameworks[i] : null)
+        .filter((v: null) => v !== null)
+    });
+
+    console.log(valueSubmit)
+
     if (this.form.valid) {
-      this.http.post('https://httpbin.org/post', JSON.stringify(this.form.value))
+      this.http.post('https://httpbin.org/post', JSON.stringify(valueSubmit))
         .pipe(map(res => res))
         .subscribe({
           next: dados => {
@@ -135,9 +160,14 @@ export class DataFormComponent {
     this.form.reset();
   }
 
-  verificaValidTouched(campo: any) {
+  verificaValidTouched(campo: string) {
     return !this.form.get(campo)?.valid && this.form.get(campo)?.touched
       || !this.form.get(campo)?.valid && this.form.get(campo)?.dirty;
+  }
+
+  verificaRequired(campo: string) {
+    return !this.form.get(campo)?.hasError && this.form.get(campo)?.touched 
+      || !this.form.get(campo)?.hasError && this.form.get(campo)?.dirty
   }
 
   verificaEmailInvalido() {
@@ -155,8 +185,8 @@ export class DataFormComponent {
     }
   }
 
-  setarCargo() { 
-    const cargo =  { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl'}; 
+  setarCargo() {
+    const cargo = { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl' };
     this.form.get('cargo')?.setValue(cargo)
   }
 
@@ -164,8 +194,10 @@ export class DataFormComponent {
     return obj1 && obj2 ? (obj1.nome === obj2.nome && obj1.nivel === obj2.nivel) : obj1 === obj2;
   }
 
-  setarTecnologias() { 
+  setarTecnologias() {
     this.form.get('tecnologias')?.setValue(['java', 'javaScript'])
   }
-
 }
+
+
+
