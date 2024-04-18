@@ -16,15 +16,29 @@
             <div *ngIf="verificaValidTouched('email')" class="invalid-feedback">
                 <p>E-mail é obrigatório</p>
             </div>
+            <div *ngIf="verificaEmailInvalido()" class="invalid-feedback">
+                <p>E-mail é inválido</p>
+            </div>
+            <div *ngIf="form.get('email')?.status === 'PENDING'">
+                <p>Validando email...</p>
+            </div>
+            <div *ngIf="form.get('email')?.status === 'VALID'" class="valid-feedback">
+                <p>Emáil válido</p>
+            </div>
+            <div *ngIf="form.get('email')?.hasError('emailInvalido')" class="invalid-feedback">
+                <p>Email já cadastrado</p>
+            </div>
+
         </div>
 
         <div class="col-12 mb-3" [ngClass]="aplicaCssErro('confirmarEmail')">
             <label for="confirmarEmail" class="form-label">Confirmar E-mail</label>
             <input type="email" class="form-control" formControlName="confirmarEmail" id="confirmarEmail" placeholder="nome@email.com"
                 [class.is-invalid]="verificaValidTouched('confirmarEmail')">
-            <div *ngIf="form.get('confirmarEmail')?.hasError('equalsTo')" class="invalid-feedback">
+            <div *ngIf="form.get('email')?.hasError('equalsTo')" class="invalid-feedback">
                 <p>Emails são diferentes</p>
             </div>
+            
         </div>
 
         <div class="form-group row" formGroupName="endereco">

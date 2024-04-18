@@ -9,6 +9,7 @@ import { EstadosBR } from '../shared/models/models';
 import { CepService } from '../shared/service/consulta-cep.service';
 import { FormValidations } from '../shared/form.validations';
 import { get } from 'http';
+import { VerificaEmailsService } from './services/verifica-emails.service';
 
 @Component({
   selector: 'app-data-form',
@@ -31,14 +32,18 @@ export class DataFormComponent {
     private http: HttpClient,
     private formBuilder: FormBuilder,
     private dropdown: DropdownService,
-    private cepService: CepService) { }
+    private cepService: CepService, 
+    private verifica: VerificaEmailsService) { }
 
   ngOnInit() {
 
     this.estados = this.dropdown.getEstadosBr();
+
     this.cargos = this.dropdown.getCargos();
     this.tecnologias = this.dropdown.getTecnologias();
     this.newsletterOp = this.dropdown.getNewsletter();
+
+    //this.verifica.verificarEmails('email@email.com').subscribe();
 
     /*this.dropdown.getEstadosBr()
       .subscribe(dados => { this.estados = dados; 
@@ -47,7 +52,7 @@ export class DataFormComponent {
 
     this.form = this.formBuilder.group({
       nome: [null, Validators.required],
-      email: [null, [Validators.required, Validators.email]],
+      email: [null, [Validators.required, Validators.email], [this.validarEmail.bind(this)]],
       ConfirmarEmail: [null,  [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
         cep: [null, [Validators.required, FormValidations.cepValidator ]],
@@ -197,6 +202,12 @@ consultaCEP() {
   setarTecnologias() {
     this.form.get('tecnologias')?.setValue(['java', 'javaScript'])
   }
+
+  validarEmail(formControl: FormControl) { 
+    return this.verifica.verificarEmails(formControl.value)
+      .pipe(map(emailExiste => emailExiste ? {emailInvalido: true }: null));
+  }
+
 }
 
 
