@@ -4,41 +4,26 @@
             <label for="nome" class="form-label">Nome</label>
             <input type="text" class="form-control" name="nome" formControlName="nome" id="nome" placeholder="Nome"
                 [class.is-invalid]="verificaValidTouched('nome')">
-            <div *ngIf="verificaValidTouched('nome')" class="invalid-feedback">
-                <p>Nome é obrigatório</p>
-            </div>
+            <app-error-msg [control]="form.get('nome')" label="Nome"></app-error-msg>
         </div>
 
         <div class="col-12 mb-3" [ngClass]="aplicaCssErro('email')">
             <label for="email" class="form-label">E-mail</label>
             <input type="email" class="form-control" formControlName="email" id="email" placeholder="nome@email.com"
-                [class.is-invalid]="verificaValidTouched('email')">
-            <div *ngIf="verificaValidTouched('email')" class="invalid-feedback">
-                <p>E-mail é obrigatório</p>
-            </div>
-            <div *ngIf="verificaEmailInvalido()" class="invalid-feedback">
-                <p>E-mail é inválido</p>
-            </div>
-            <div *ngIf="form.get('email')?.status === 'PENDING'">
-                <p>Validando email...</p>
-            </div>
-            <div *ngIf="form.get('email')?.status === 'VALID'" class="valid-feedback">
-                <p>Emáil válido</p>
-            </div>
-            <div *ngIf="form.get('email')?.hasError('emailInvalido')" class="invalid-feedback">
-                <p>Email já cadastrado</p>
-            </div>
-
+                [class.is-invalid]="verificaValidTouched('nome')">
+            <app-error-msg [control]="form.get('email')" label="Email"></app-error-msg>
+            <app-campo-control-erro [mostrarErro]="form.get('email')?.status === 'PENDING'"
+                msgErro="Validando email..."></app-campo-control-erro>
         </div>
 
         <div class="col-12 mb-3" [ngClass]="aplicaCssErro('confirmarEmail')">
             <label for="confirmarEmail" class="form-label">Confirmar E-mail</label>
-            <input type="email" class="form-control" formControlName="confirmarEmail" id="confirmarEmail" placeholder="nome@email.com"
-                [class.is-invalid]="verificaValidTouched('confirmarEmail')">
+            <input type="email" class="form-control" formControlName="confirmarEmail" id="confirmarEmail"
+                placeholder="nome@email.com" [class.is-invalid]="verificaValidTouched('email')">
             <div *ngIf="form.get('email')?.hasError('equalsTo')" class="invalid-feedback">
                 <p>Emails são diferentes</p>
             </div>
-            
+
         </div>
 
         <div class="form-group row" formGroupName="endereco">
@@ -48,7 +33,7 @@
                     [class.is-invalid]="verificaValidTouched('endereco.cep')" (blur)="consultaCEP()">
                 <div *ngIf="verificaRequired('endereco.cep')" class="invalid-feedback">
                     <p>CEP é Obrigatório</p>
-                </div> 
+                </div>
                 <div *ngIf="form.get('endereco.cep')?.hasError('cepInvalido')" class="invalid-feedback">
                     <p>CEP inválido</p>
                 </div>
@@ -164,7 +149,8 @@
                         <div class="form-check form-check-inline" formArrayName="frameworks"
                             *ngFor="let item of getFrameworksControls(); let i = index">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" [formControlName]="i"> {{ frameworks[i] }}
+                                <input class="form-check-input" type="checkbox" [formControlName]="i"> {{ frameworks[i]
+                                }}
                             </label>
                             <div *ngIf="verificaValidTouched('frameworks')" class="invalid-feedback">
                                 <p>Selecione pelo menos 1 opção</p>

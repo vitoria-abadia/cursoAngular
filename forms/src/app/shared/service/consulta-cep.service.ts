@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,6 @@ export class CepService {
         return this.http.get(`//viacep.com.br/ws/${cep}/json`);
       }
     }
-
     return of({});
   }
 }

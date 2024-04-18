@@ -1,24 +1,28 @@
 import { Component } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, Validators, FormBuilder, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, Validators, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { FormDebugComponent } from '../form-debug/form-debug.component';
 import { Observable, map } from 'rxjs';
+
+import { FormDebugComponent } from '../form-debug/form-debug.component';
 import { DropdownService } from '../shared/service/dropdown.service';
 import { EstadosBR } from '../shared/models/models';
 import { CepService } from '../shared/service/consulta-cep.service';
 import { FormValidations } from '../shared/form.validations';
-import { get } from 'http';
 import { VerificaEmailsService } from './services/verifica-emails.service';
+import { ErrorMsgComponent } from '../shared/error-msg/error-msg.component';
+import { CampoControlErroComponent } from '../shared/campo-control-erro/campo-control-erro.component';
 
 @Component({
   selector: 'app-data-form',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormDebugComponent],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormDebugComponent, ErrorMsgComponent, CampoControlErroComponent],
+  providers: [FormValidations],
   templateUrl: './data-form.component.html',
   styleUrl: './data-form.component.css'
 })
 export class DataFormComponent {
+[x: string]: any;
 
   form!: FormGroup;
   estados!: Observable<EstadosBR[]>;
@@ -51,7 +55,7 @@ export class DataFormComponent {
       })*/
 
     this.form = this.formBuilder.group({
-      nome: [null, Validators.required],
+      nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       email: [null, [Validators.required, Validators.email], [this.validarEmail.bind(this)]],
       ConfirmarEmail: [null,  [FormValidations.equalsTo('email')]],
       endereco: this.formBuilder.group({
@@ -185,9 +189,9 @@ consultaCEP() {
 
   aplicaCssErro(campo: any) {
     return {
-      'has-error': this.verificaValidTouched(campo),
-      'has-feedback': this.verificaValidTouched(campo)
-    }
+      'is-invalid': this.verificaValidTouched(campo), 
+      'invalid-feedback': this.verificaValidTouched(campo)
+    };
   }
 
   setarCargo() {

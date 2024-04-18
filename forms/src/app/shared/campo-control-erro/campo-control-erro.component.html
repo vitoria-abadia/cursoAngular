@@ -1,0 +1,7 @@
+<div *ngIf="mostrarErro && formControl?.touched" class="position-relative">
+    <span class="bi bi-x-circle-fill text-danger position-absolute top-50 translate-middle-y"></span>
+    <span class="visually-hidden">(error)</span>
+    <div class="alert alert-primary" role="alert">
+        {{ msgErro }}
+    </div>
+</div>

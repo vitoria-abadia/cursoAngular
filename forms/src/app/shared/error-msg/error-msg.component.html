@@ -1,0 +1,8 @@
+<div *ngIf="errorMessage != null" class="position-relative">
+    <span class="bi bi-x-circle-fill text-danger position-absolute top-50 translate-middle-y"></span>
+    <span class="visually-hidden">(error)</span>
+    <div class="valid-feedback">
+      {{ errorMessage }}
+    </div>
+</div>
+  
