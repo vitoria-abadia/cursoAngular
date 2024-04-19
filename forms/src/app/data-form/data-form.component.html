@@ -28,7 +28,7 @@
         <div class="form-group row" formGroupName="endereco">
             <div class="col-md-3 mb-3">
                 <label for="cep" class="control-label">CEP</label>
-                <input type="text" class="form-control" id="cep" formControlName="cep">
+                <input type="text" class="form-control" id="cep" formControlName="cep" (blur)="consultaCEP()">
                 <app-error-msg [control]="form.get('endereco.cep')" label="CEP"></app-error-msg>
             </div>
             <div class="col-md-3 mb-3">

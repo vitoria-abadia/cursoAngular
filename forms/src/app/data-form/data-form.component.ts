@@ -71,39 +71,42 @@ export class DataFormComponent implements OnInit {
       termos: [null, Validators.pattern('true')],
       frameworks: this.buildFrameworks()
     });
+
+   // this.form.value.
+
   }
-    /*this.form.get('endereco.cep').statusChanges
-      .pipe(
-        distinctUntilChanged(),
-        tap(value => console.log('status CEP:', value)),
-        switchMap(status => status === 'VALID' ?
-          this.cepService.consultaCEP(this.form.get('endereco.cep').value)
-          : empty()
-        )
+  /*this.form.get('endereco.cep').statusChanges
+    .pipe(
+      distinctUntilChanged(),
+      tap(value => console.log('status CEP:', value)),
+      switchMap(status => status === 'VALID' ?
+        this.cepService.consultaCEP(this.form.get('endereco.cep').value)
+        : empty()
       )
-      .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
+    )
+    .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
 
-      this.form.get('endereco.estado').valueChanges
-        .pipe(
-          tap(estado => console.log('Novo estado: ', estado)),
-          map(estado => this.estados.filter(e => e.sigla === estado)),
-          map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
-          switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
-          tap(console.log)
-        )
-        .subscribe(cidades => this.cidades = cidades);
+    this.form.get('endereco.estado').valueChanges
+      .pipe(
+        tap(estado => console.log('Novo estado: ', estado)),
+        map(estado => this.estados.filter(e => e.sigla === estado)),
+        map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
+        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+        tap(console.log)
+      )
+      .subscribe(cidades => this.cidades = cidades);
 
-      // this.dropdownService.getCidades(8).subscribe(console.log);
+    // this.dropdownService.getCidades(8).subscribe(console.log);
 
-    // tslint:disable-next-line:max-line-length
-    // Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-    // [Validators.required, Validators.minLength(3), Validators.maxLength(20)]
-  }*/
+  // tslint:disable-next-line:max-line-length
+  // Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+  // [Validators.required, Validators.minLength(3), Validators.maxLength(20)]
+}*/
 
- buildFrameworks() { 
-  const values = this.frameworks.map(v =>  new FormControl(false)); 
-  return this.formBuilder.array(values);
- }
+  buildFrameworks() {
+    const values = this.frameworks.map(v => new FormControl(false));
+    return this.formBuilder.array(values);
+  }
 
   onSubmit() {
     console.log(this.form.value);
@@ -158,7 +161,7 @@ export class DataFormComponent implements OnInit {
 
     if (cep != null && cep !== '') {
       this.cepService.consultaCEP(cep)
-      .subscribe((dados: any) => this.populaDadosForm(dados));
+        .subscribe((dados: any) => this.populaDadosForm(dados));
     }
   }
 
