@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -21,45 +21,42 @@ import { CampoControlErroComponent } from '../shared/campo-control-erro/campo-co
   templateUrl: './data-form.component.html',
   styleUrl: './data-form.component.css'
 })
-export class DataFormComponent {
-[x: string]: any;
+
+export class DataFormComponent implements OnInit {
 
   form!: FormGroup;
   estados!: Observable<EstadosBR[]>;
+  //cidades!: Cidade[];
   cargos!: any[];
   tecnologias!: any[];
   newsletterOp!: any[];
 
-  frameworks = ['Angular', 'React', 'Vue', 'Sencha']
+  frameworks = ['Angular', 'React', 'Vue', 'Sencha'];
 
   constructor(
-    private http: HttpClient,
     private formBuilder: FormBuilder,
-    private dropdown: DropdownService,
-    private cepService: CepService, 
-    private verifica: VerificaEmailsService) { }
+    private http: HttpClient,
+    private dropdownService: DropdownService,
+    private cepService: CepService,
+    private verificaEmailService: VerificaEmailsService
+  ) { }
 
   ngOnInit() {
 
-    this.estados = this.dropdown.getEstadosBr();
+    this.dropdownService.getEstadosBr()
+      .subscribe(dados => this.estados = dados);
 
-    this.cargos = this.dropdown.getCargos();
-    this.tecnologias = this.dropdown.getTecnologias();
-    this.newsletterOp = this.dropdown.getNewsletter();
-
-    //this.verifica.verificarEmails('email@email.com').subscribe();
-
-    /*this.dropdown.getEstadosBr()
-      .subscribe(dados => { this.estados = dados; 
-        console.log(dados);
-      })*/
+    this.cargos = this.dropdownService.getCargos();
+    this.tecnologias = this.dropdownService.getTecnologias();
+    this.newsletterOp = this.dropdownService.getNewsletter();
 
     this.form = this.formBuilder.group({
       nome: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       email: [null, [Validators.required, Validators.email], [this.validarEmail.bind(this)]],
-      ConfirmarEmail: [null,  [FormValidations.equalsTo('email')]],
+      confirmarEmail: [null, [FormValidations.equalsTo('email')]],
+
       endereco: this.formBuilder.group({
-        cep: [null, [Validators.required, FormValidations.cepValidator ]],
+        cep: [null, [Validators.required, FormValidations.cepValidator]],
         numero: [null, Validators.required],
         complemento: [null],
         rua: [null, Validators.required],
@@ -67,59 +64,46 @@ export class DataFormComponent {
         cidade: [null, Validators.required],
         estado: [null, Validators.required]
       }),
+
       cargo: [null],
       tecnologias: [null],
       newsletter: ['s'],
       termos: [null, Validators.pattern('true')],
       frameworks: this.buildFrameworks()
-  })
-}
-
-buildFrameworks() { 
-  const values = this.frameworks.map(v => new FormControl(false));
-  return this.formBuilder.array(values, FormValidations.requiredMinCheckbox(1));
-}
-
-getFrameworksControls() {
-  return this.form.get('frameworks') ? (<FormArray>this.form.get('frameworks')).controls : null;
-}
-
-consultaCEP() {
-    const cep = this.form.get('endereco.cep')?.value;
-
-    if (cep != null && cep !== '') {
-      this.cepService.consultaCEP(cep).subscribe((dados: any) => this.populaDadosForm(dados));
-    } else {
-      console.error('Campo de CEP não encontrado ou está vazio no formulário.');
-    }
-  }
-
-  populaDadosForm(dados:
-    { logradouro: any; complemento: any; bairro: any; localidade: any; uf: any; gia: any }) {
-    this.form.patchValue({
-      endereco: {
-        rua: dados.logradouro,
-        numero: dados.gia,
-        // cep: dados.cep, 
-        complemento: dados.complemento,
-        bairro: dados.bairro,
-        cidade: dados.localidade,
-        estado: dados.uf
-      }
     });
   }
+    /*this.form.get('endereco.cep').statusChanges
+      .pipe(
+        distinctUntilChanged(),
+        tap(value => console.log('status CEP:', value)),
+        switchMap(status => status === 'VALID' ?
+          this.cepService.consultaCEP(this.form.get('endereco.cep').value)
+          : empty()
+        )
+      )
+      .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
 
-  resetaDadosForm() {
-    this.form.patchValue({
-      endereco: {
-        rua: null,
-        complemento: null,
-        bairro: null,
-        cidade: null,
-        estado: null
-      }
-    });
-  }
+      this.form.get('endereco.estado').valueChanges
+        .pipe(
+          tap(estado => console.log('Novo estado: ', estado)),
+          map(estado => this.estados.filter(e => e.sigla === estado)),
+          map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
+          switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
+          tap(console.log)
+        )
+        .subscribe(cidades => this.cidades = cidades);
+
+      // this.dropdownService.getCidades(8).subscribe(console.log);
+
+    // tslint:disable-next-line:max-line-length
+    // Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+    // [Validators.required, Validators.minLength(3), Validators.maxLength(20)]
+  }*/
+
+ buildFrameworks() { 
+  const values = this.frameworks.map(v =>  new FormControl(false)); 
+  return this.formBuilder.array(values);
+ }
 
   onSubmit() {
     console.log(this.form.value);
@@ -169,34 +153,44 @@ consultaCEP() {
     this.form.reset();
   }
 
-  verificaValidTouched(campo: string) {
-    return !this.form.get(campo)?.valid && this.form.get(campo)?.touched
-      || !this.form.get(campo)?.valid && this.form.get(campo)?.dirty;
-  }
+  consultaCEP() {
+    const cep = this.form.get('endereco.cep')?.value;
 
-  verificaRequired(campo: string) {
-    return !this.form.get(campo)?.hasError && this.form.get(campo)?.touched 
-      || !this.form.get(campo)?.hasError && this.form.get(campo)?.dirty
-  }
-
-  verificaEmailInvalido() {
-    let campoEmail = this.form.get('email');
-    if (campoEmail?.errors) {
-      return campoEmail.errors['email']
-        && campoEmail.touched;
+    if (cep != null && cep !== '') {
+      this.cepService.consultaCEP(cep)
+      .subscribe((dados: any) => this.populaDadosForm(dados));
     }
   }
 
-  aplicaCssErro(campo: any) {
-    return {
-      'is-invalid': this.verificaValidTouched(campo), 
-      'invalid-feedback': this.verificaValidTouched(campo)
-    };
+  populaDadosForm(dados:
+    { logradouro: any; complemento: any; bairro: any; localidade: any; uf: any; gia: any }) {
+    this.form.patchValue({
+      endereco: {
+        rua: dados.logradouro,
+        // cep: dados.cep,
+        complemento: dados.complemento,
+        bairro: dados.bairro,
+        cidade: dados.localidade,
+        estado: dados.uf
+      }
+    });
+  }
+
+  resetaDadosForm() {
+    this.form.patchValue({
+      endereco: {
+        rua: null,
+        complemento: null,
+        bairro: null,
+        cidade: null,
+        estado: null
+      }
+    });
   }
 
   setarCargo() {
     const cargo = { nome: 'Dev', nivel: 'Pleno', desc: 'Dev Pl' };
-    this.form.get('cargo')?.setValue(cargo)
+    this.form.get('cargo')?.setValue(cargo);
   }
 
   compararCargos(obj1: { nome: any; nivel: any; }, obj2: { nome: any; nivel: any; }) {
@@ -204,15 +198,15 @@ consultaCEP() {
   }
 
   setarTecnologias() {
-    this.form.get('tecnologias')?.setValue(['java', 'javaScript'])
+    this.form.get('tecnologias')?.setValue(['java', 'javascript', 'php']);
   }
 
-  validarEmail(formControl: FormControl) { 
-    return this.verifica.verificarEmails(formControl.value)
-      .pipe(map(emailExiste => emailExiste ? {emailInvalido: true }: null));
+  validarEmail(formControl: FormControl) {
+    return this.verificaEmailService.verificarEmails(formControl.value)
+      .pipe(map(emailExiste => emailExiste ? { emailInvalido: true } : null));
   }
 
+  getFrameworksControls() {
+    return this.form.get('frameworks') ? (<FormArray>this.form.get('frameworks')).controls : null;
+  }
 }
-
-
-
