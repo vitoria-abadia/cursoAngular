@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { Observable, map } from 'rxjs';
 
+import { EMPTY, distinctUntilChanged, map, switchMap, tap } from 'rxjs';
 import { FormDebugComponent } from '../form-debug/form-debug.component';
 import { DropdownService } from '../shared/service/dropdown.service';
 import { EstadosBR } from '../shared/models/models';
@@ -12,21 +12,27 @@ import { FormValidations } from '../shared/form.validations';
 import { VerificaEmailsService } from './services/verifica-emails.service';
 import { ErrorMsgComponent } from '../shared/error-msg/error-msg.component';
 import { CampoControlErroComponent } from '../shared/campo-control-erro/campo-control-erro.component';
+import { InputFieldComponent } from '../shared/input-field/input-field.component';
+import { BaseFormComponent } from '../shared/base-form/base-form.component';
+import { Endereco } from '../shared/models/endereco';
+import { Cidade } from '../shared/models/cidade';
 
 @Component({
   selector: 'app-data-form',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormDebugComponent, ErrorMsgComponent, CampoControlErroComponent],
-  providers: [FormValidations],
+  imports: [CommonModule, HttpClientModule, ReactiveFormsModule, FormDebugComponent, ErrorMsgComponent, CampoControlErroComponent, InputFieldComponent],
+  providers: [FormValidations, DropdownService],
   templateUrl: './data-form.component.html',
   styleUrl: './data-form.component.css'
 })
 
-export class DataFormComponent implements OnInit {
+export class DataFormComponent extends BaseFormComponent implements OnInit {
 
-  form!: FormGroup;
-  estados!: Observable<EstadosBR[]>;
-  //cidades!: Cidade[];
+  aplicaCssErro(arg0: string): any {
+    throw new Error('Method not implemented.');
+  }
+  estados!: EstadosBR[];
+  cidades!: Cidade[];
   cargos!: any[];
   tecnologias!: any[];
   newsletterOp!: any[];
@@ -39,7 +45,9 @@ export class DataFormComponent implements OnInit {
     private dropdownService: DropdownService,
     private cepService: CepService,
     private verificaEmailService: VerificaEmailsService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
 
@@ -72,36 +80,35 @@ export class DataFormComponent implements OnInit {
       frameworks: this.buildFrameworks()
     });
 
-   // this.form.value.
-
-  }
-  /*this.form.get('endereco.cep').statusChanges
-    .pipe(
-      distinctUntilChanged(),
-      tap(value => console.log('status CEP:', value)),
-      switchMap(status => status === 'VALID' ?
-        this.cepService.consultaCEP(this.form.get('endereco.cep').value)
-        : empty()
-      )
-    )
-    .subscribe(dados => dados ? this.populaDadosForm(dados) : {});
-
-    this.form.get('endereco.estado').valueChanges
+    this.form.get('endereco.cep')?.statusChanges
       .pipe(
-        tap(estado => console.log('Novo estado: ', estado)),
-        map(estado => this.estados.filter(e => e.sigla === estado)),
-        map(estados => estados && estados.length > 0 ? estados[0].id : empty()),
-        switchMap((estadoId: number) => this.dropdownService.getCidades(estadoId)),
-        tap(console.log)
+        distinctUntilChanged(),
+        tap(status => console.log('valor CEP', status)),
+        switchMap(status => status === 'VALID' ?
+          this.cepService.consultaCEP(this.form.get('endereco.cep')?.value)
+          : EMPTY
+        )
       )
-      .subscribe(cidades => this.cidades = cidades);
+      .subscribe((dados: Endereco | any) => {
+        if (dados) {
+          this.populaDadosForm(dados);
+        }
+      });
 
-    // this.dropdownService.getCidades(8).subscribe(console.log);
-
-  // tslint:disable-next-line:max-line-length
-  // Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-  // [Validators.required, Validators.minLength(3), Validators.maxLength(20)]
-}*/
+      this.form.get('endereco.estado')?.valueChanges
+    .pipe(
+      tap(estado => console.log('Novo estado', estado)), 
+      map(estado => this.estados.filter(e => e.sigla === estado)), 
+      map(estados => estados && estados.length > 0 ? estados[0].id : null), 
+      switchMap((estadoId: number | null) => estadoId !== null ? this.dropdownService.getCidades(estadoId) : EMPTY),
+      tap(console.log)
+    )
+    .subscribe(cidades => {
+      if (cidades) {
+        this.cidades = cidades;
+      }
+    });
+}
 
   buildFrameworks() {
     const values = this.frameworks.map(v => new FormControl(false));
@@ -165,8 +172,7 @@ export class DataFormComponent implements OnInit {
     }
   }
 
-  populaDadosForm(dados:
-    { logradouro: any; complemento: any; bairro: any; localidade: any; uf: any; gia: any }) {
+  populaDadosForm(dados: Endereco) {
     this.form.patchValue({
       endereco: {
         rua: dados.logradouro,
