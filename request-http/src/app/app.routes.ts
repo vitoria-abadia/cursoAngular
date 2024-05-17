@@ -10,6 +10,10 @@ export const routes: Routes = [
     { 
         path: 'cursos', 
         loadComponent: () => import('./app/cursos/cursos-lista/cursos-lista.component').then(c => c.CursosListaComponent)
+    }, 
+    {
+        path: 'rxjs-poc', 
+        loadComponent: () => import('./app/unsubscribe-rxjs/unsubscribe-poc/unsubscribe-poc.component').then(c => c.UnsubscribePocComponent)
     }
 ];
 
