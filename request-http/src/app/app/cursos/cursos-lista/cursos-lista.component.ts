@@ -5,7 +5,7 @@ import { CommonModule, NgFor } from '@angular/common';
 
 import { CursoService } from '../service-cursos/curso.service';
 import { Curso } from '../../models/cursos';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable, Subject, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-cursos-lista',
@@ -17,17 +17,37 @@ import { Observable } from 'rxjs';
   preserveWhitespaces: true
 })
 export class CursosListaComponent implements OnInit {
-  
+
   cursos!: Curso[];
   curso$!: Observable<Curso[]>;
+  error$ = new Subject<boolean>();
 
   constructor(private service: CursoService) { }
 
   ngOnInit(): void {
     //this.service.list()
-   //   .subscribe(dados => this.cursos = dados)
+    //   .subscribe(dados => this.cursos = dados)
 
-   this.curso$ = this.service.list();
+    this.onRefresh();
   }
 
+  onRefresh() {
+    this.curso$ = this.service.list()
+      .pipe(
+        catchError(ERROR => {
+          console.log(ERROR);
+          this.error$.next(true);
+          return EMPTY;
+        })
+      );
+    this.service.list()
+      .pipe(
+        catchError(error => EMPTY)
+      )
+      .subscribe(
+        dados => {
+          console.log(dados);
+        },
+      )
+  }
 }
