@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
+import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 
 export const routes: Routes = [
     { 
@@ -18,8 +20,12 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)], 
-    exports: [RouterModule]
+    imports: [
+        RouterModule.forRoot(routes),
+        ModalModule.forRoot(), 
+        BrowserModule
+    ], 
+    exports: [RouterModule], 
 })
 
 export class AppRoutingModule { }

@@ -1,42 +1,44 @@
-import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { EMPTY, Observable, Subject, catchError } from 'rxjs';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { CursoService } from '../service-cursos/curso.service';
 import { Curso } from '../../models/cursos';
-import { EMPTY, Observable, Subject, catchError } from 'rxjs';
+import { AlertModalComponent } from '../../shared/alert-modal/alert-modal.component';
 
 @Component({
   selector: 'app-cursos-lista',
   standalone: true,
-  imports: [RouterModule, HttpClientModule, NgFor, CommonModule],
-  providers: [CursoService],
+  imports: [RouterModule, AlertModalComponent, CommonModule],
+  providers: [CursoService, BsModalService],
   templateUrl: './cursos-lista.component.html',
-  styleUrl: './cursos-lista.component.css',
+  styleUrls: ['./cursos-lista.component.css'],
   preserveWhitespaces: true
 })
 export class CursosListaComponent implements OnInit {
 
+  bsModalRef?: BsModalRef;
   cursos!: Curso[];
   curso$!: Observable<Curso[]>;
   error$ = new Subject<boolean>();
 
-  constructor(private service: CursoService) { }
+  constructor(
+    private service: CursoService, 
+    private modalService: BsModalService
+  ) { }
 
   ngOnInit(): void {
-    //this.service.list()
-    //   .subscribe(dados => this.cursos = dados)
-
     this.onRefresh();
   }
 
   onRefresh() {
     this.curso$ = this.service.list()
       .pipe(
-        catchError(ERROR => {
-          console.log(ERROR);
-          this.error$.next(true);
+        catchError(error => {
+          console.log(error);
+          this.handleError();
           return EMPTY;
         })
       );
@@ -48,6 +50,14 @@ export class CursosListaComponent implements OnInit {
         dados => {
           console.log(dados);
         },
-      )
+      );
+  }
+
+  handleError() { 
+    this.bsModalRef = this.modalService.show(AlertModalComponent);
+    if (this.bsModalRef?.content) {
+      this.bsModalRef.content.type = 'danger';
+      this.bsModalRef.content.message = 'Erro ao carregar cursos. Tente mais tarde';
+    }
   }
 }
