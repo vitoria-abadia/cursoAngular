@@ -2,31 +2,30 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EMPTY, Observable, Subject, catchError } from 'rxjs';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 import { CursoService } from '../service-cursos/curso.service';
 import { Curso } from '../../models/cursos';
 import { AlertModalComponent } from '../../shared/alert-modal/alert-modal.component';
+import { AlertModalService } from '../../shared/alert-modal.service';
 
 @Component({
   selector: 'app-cursos-lista',
   standalone: true,
-  imports: [RouterModule, AlertModalComponent, CommonModule],
-  providers: [CursoService, BsModalService],
+  imports: [RouterModule, CommonModule],
+  providers: [CursoService],
   templateUrl: './cursos-lista.component.html',
   styleUrls: ['./cursos-lista.component.css'],
   preserveWhitespaces: true
 })
 export class CursosListaComponent implements OnInit {
 
-  bsModalRef?: BsModalRef;
   cursos!: Curso[];
   curso$!: Observable<Curso[]>;
   error$ = new Subject<boolean>();
 
   constructor(
     private service: CursoService, 
-    private modalService: BsModalService
+    //private alertService: AlertModalService,
   ) { }
 
   ngOnInit(): void {
@@ -54,10 +53,6 @@ export class CursosListaComponent implements OnInit {
   }
 
   handleError() { 
-    this.bsModalRef = this.modalService.show(AlertModalComponent);
-    if (this.bsModalRef?.content) {
-      this.bsModalRef.content.type = 'danger';
-      this.bsModalRef.content.message = 'Erro ao carregar cursos. Tente mais tarde';
-    }
+    //this.alertService.showAlertDanger('Erro ao carregar cursos. Tente mais tarde')
   }
 }

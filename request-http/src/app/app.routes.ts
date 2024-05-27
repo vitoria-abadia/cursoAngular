@@ -26,6 +26,7 @@ export const routes: Routes = [
         BrowserModule
     ], 
     exports: [RouterModule], 
+    providers: [BsModalService]
 })
 
 export class AppRoutingModule { }
