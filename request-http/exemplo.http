@@ -9,7 +9,7 @@ POST http://localhost:3000/cursos
 content-type: application/json
 
 {
-    "name": "JavaScript",
+    "name": "React",
 }
 
 ####
