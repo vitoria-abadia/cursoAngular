@@ -4,12 +4,19 @@
       <h4>Cursos</h4>
     </div>
     <div class="float-end">
-      <button type="button" class="btn btn-primary" [routerLink]="['novo']">Novo Curso</button>
-      <button type="button" class="btn btn-secondary" (click)="onRefresh()">Atualizar</button>
+      <button type="button" class="btn btn-primary" [routerLink]="['novo']">
+        Novo Curso
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onRefresh()">
+        Atualizar
+      </button>
     </div>
   </div>
   <div class="card-body">
-    <table class="table table-hover" *ngIf="curso$ | async as cursos; else loading">
+    <table
+      class="table table-hover"
+      *ngIf="curso$ | async as cursos; else loading"
+    >
       <thead>
         <tr>
           <th>#</th>

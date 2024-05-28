@@ -8,7 +8,7 @@ import { EnviarValoresService } from '../../../service/enviar-valores.service';
   standalone: true,
   imports: [PocBaseComponent],
   templateUrl: './poc-unsub.component.html',
-  styleUrl: './poc-unsub.component.css'
+  styleUrl: './poc-unsub.component.css',
 })
 export class PocUnsubComponent {
   nome = 'Componente com unsubscribe';
@@ -16,17 +16,19 @@ export class PocUnsubComponent {
 
   sub: Subscription[] = [];
 
-  constructor(private service: EnviarValoresService) { }
+  constructor(private service: EnviarValoresService) {}
 
   ngOnInit() {
-    this.sub.push(this.service.getValor()
-      .pipe(tap(v => console.log(this.nome, v)))
-      .subscribe(novoValor => this.valor = novoValor));
+    this.sub.push(
+      this.service
+        .getValor()
+        .pipe(tap((v) => console.log(this.nome, v)))
+        .subscribe((novoValor) => (this.valor = novoValor))
+    );
   }
 
   ngOnDestroy(): void {
-    this.sub.forEach(s => s.unsubscribe());
-    console.log(`${this.nome} foi destruido`)
+    this.sub.forEach((s) => s.unsubscribe());
+    console.log(`${this.nome} foi destruido`);
   }
-
 }

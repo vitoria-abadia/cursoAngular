@@ -2,20 +2,18 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EnviarValoresService {
-
-  constructor() { }
+  constructor() {}
 
   private emissor$ = new Subject<string>();
 
-  emitirValor(valor:string) { 
+  emitirValor(valor: string) {
     this.emissor$.next(valor);
   }
 
-  getValor() { 
+  getValor() {
     return this.emissor$.asObservable();
   }
-
 }

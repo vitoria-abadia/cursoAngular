@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 
 import { EnviarValoresService } from '../../service/enviar-valores.service';
 import { PocBaseComponent } from '../poc-base/poc-base.component';
@@ -9,30 +9,28 @@ import { PocTakeUntilComponent } from '../components/poc-take-until/poc-take-unt
 import { PocTakeComponent } from '../components/poc-take/poc-take.component';
 import { PocUnsubComponent } from '../components/poc-unsub/poc-unsub.component';
 
-
 @Component({
   selector: 'app-unsubscribe-poc',
   standalone: true,
   imports: [
-    NgIf,
+    CommonModule,
     UnsubscribePocComponent,
     PocComponent,
     PocAsyncComponent,
     PocTakeUntilComponent,
     PocTakeComponent,
     PocUnsubComponent,
-    PocBaseComponent],
+    PocBaseComponent,
+  ],
   templateUrl: './unsubscribe-poc.component.html',
-  styleUrl: './unsubscribe-poc.component.css'
+  styleUrl: './unsubscribe-poc.component.css',
 })
 export class UnsubscribePocComponent {
-
   mostrarComponentes = true;
 
-  constructor(private service: EnviarValoresService) { }
+  constructor(private service: EnviarValoresService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   emitirValor(valor: string) {
     this.service.emitirValor(valor);
@@ -41,5 +39,4 @@ export class UnsubscribePocComponent {
   destruirComponentes() {
     this.mostrarComponentes = !this.mostrarComponentes;
   }
-
 }

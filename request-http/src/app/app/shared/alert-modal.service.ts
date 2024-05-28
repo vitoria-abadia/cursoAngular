@@ -4,31 +4,35 @@ import { AlertModalComponent } from './alert-modal/alert-modal.component';
 
 export enum AlertTypes {
   DANGER = 'danger',
-  SUCCESS = 'success'
+  SUCCESS = 'success',
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlertModalService {
-  constructor() { }
+  constructor() {}
 
-  private showAlert(message: string, type: AlertTypes, modalService: BsModalService, dismissTimeout?: number) {
+  private showAlert(
+    message: string,
+    type: AlertTypes,
+    modalService: BsModalService,
+    dismissTimeout?: number
+  ) {
     const bsModalRef: BsModalRef = modalService.show(AlertModalComponent);
     bsModalRef.content.type = type;
     bsModalRef.content.message = message;
-  
+
     if (dismissTimeout) {
       setTimeout(() => bsModalRef.hide(), dismissTimeout);
     }
   }
-  
+
   showAlertDanger(message: string, modalService: BsModalService) {
     this.showAlert(message, AlertTypes.DANGER, modalService);
   }
-  
+
   showAlertSuccess(message: string, modalService: BsModalService) {
     this.showAlert(message, AlertTypes.SUCCESS, modalService, 3000);
   }
-  
 }

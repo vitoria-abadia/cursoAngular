@@ -8,23 +8,22 @@ import { tap } from 'rxjs';
   standalone: true,
   imports: [PocBaseComponent],
   templateUrl: './poc.component.html',
-  styleUrl: './poc.component.css'
+  styleUrl: './poc.component.css',
 })
 export class PocComponent implements OnInit, OnDestroy {
-
   nome = 'Componente sem unsubscribe';
   valor!: string;
 
-  constructor(private service: EnviarValoresService) { }
+  constructor(private service: EnviarValoresService) {}
 
   ngOnInit() {
-    this.service.getValor()
-      .pipe(tap(v => console.log(this.nome, v)))
-      .subscribe(novoValor => this.valor = novoValor);
+    this.service
+      .getValor()
+      .pipe(tap((v) => console.log(this.nome, v)))
+      .subscribe((novoValor) => (this.valor = novoValor));
   }
 
   ngOnDestroy(): void {
-    console.log(`${this.nome} foi destruido`)
+    console.log(`${this.nome} foi destruido`);
   }
-
 }

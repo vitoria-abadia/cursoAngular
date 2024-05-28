@@ -16,33 +16,31 @@ import { BsModalService } from 'ngx-bootstrap/modal';
   providers: [CursoService],
   templateUrl: './cursos-lista.component.html',
   styleUrls: ['./cursos-lista.component.css'],
-  preserveWhitespaces: true
+  preserveWhitespaces: true,
 })
 export class CursosListaComponent implements OnInit {
-
   cursos!: Curso[];
   curso$!: Observable<Curso[]>;
   error$ = new Subject<boolean>();
 
   constructor(
-    private service: CursoService,
-    // private alertModalService: AlertModalService,
-    // private modalService: BsModalService 
-  ) { }
+    private service: CursoService
+  ) // private alertModalService: AlertModalService,
+  // private modalService: BsModalService
+  {}
 
   ngOnInit(): void {
     this.onRefresh();
   }
 
   onRefresh() {
-    this.curso$ = this.service.list()
-      .pipe(
-        catchError(error => {
-          console.log(error);
-          this.handleError();
-          return EMPTY;
-        })
-      );
+    this.curso$ = this.service.list().pipe(
+      catchError((error) => {
+        console.log(error);
+        this.handleError();
+        return EMPTY;
+      })
+    );
   }
 
   handleError() {

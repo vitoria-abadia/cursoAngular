@@ -6,19 +6,17 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
   standalone: true,
   imports: [],
   templateUrl: './alert-modal.component.html',
-  styleUrl: './alert-modal.component.css'
+  styleUrl: './alert-modal.component.css',
 })
 export class AlertModalComponent implements OnInit {
-
   @Input() message!: string;
-  @Input() type!: 'success'
+  @Input() type!: 'success';
 
   constructor(public bsModalRef: BsModalRef) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  onClose() { 
+  onClose() {
     this.bsModalRef.hide();
   }
 }
