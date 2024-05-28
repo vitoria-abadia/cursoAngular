@@ -11,7 +11,20 @@ export const routes: Routes = [
     }, 
     { 
         path: 'cursos', 
-        loadComponent: () => import('./app/cursos/cursos-lista/cursos-lista.component').then(c => c.CursosListaComponent)
+        children: [
+            { 
+                path: '', 
+                loadComponent: () => import('./app/cursos/cursos-lista/cursos-lista.component').then(c => c.CursosListaComponent)
+            },
+            { 
+                path: 'novo', 
+                loadComponent: () => import('./app/cursos/cursos-form/cursos-form.component').then(c => c.CursosFormComponent)
+            },
+            {
+                path: 'editar/:id',
+                loadComponent: () => import('./app/cursos/cursos-form/cursos-form.component').then(c => c.CursosFormComponent)
+            }
+        ]
     }, 
     {
         path: 'rxjs-poc', 

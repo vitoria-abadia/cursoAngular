@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { take, tap } from 'rxjs';
 
 import { PocBaseComponent } from '../../poc-base/poc-base.component';
-import { EnviarValoresService } from '../../../enviar-valores.service';
+import { EnviarValoresService } from '../../../service/enviar-valores.service';
 
 @Component({
   selector: 'app-poc-take',

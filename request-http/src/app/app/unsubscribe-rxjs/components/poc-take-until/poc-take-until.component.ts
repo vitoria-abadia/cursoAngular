@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PocBaseComponent } from '../../poc-base/poc-base.component';
-import { EnviarValoresService } from '../../../enviar-valores.service';
+import { EnviarValoresService } from '../../../service/enviar-valores.service';
 import { Subject, takeUntil, tap } from 'rxjs';
 
 @Component({

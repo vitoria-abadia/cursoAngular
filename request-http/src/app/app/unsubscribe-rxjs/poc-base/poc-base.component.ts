@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { EnviarValoresService } from '../../enviar-valores.service';
+import { EnviarValoresService } from '../../service/enviar-valores.service';
 
 @Component({
   selector: 'app-poc-base',

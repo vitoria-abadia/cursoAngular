@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PocBaseComponent } from '../../poc-base/poc-base.component';
-import { EnviarValoresService } from '../../../enviar-valores.service';
+import { EnviarValoresService } from '../../../service/enviar-valores.service';
 import { tap } from 'rxjs';
 
 @Component({

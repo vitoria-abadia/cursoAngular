@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Curso } from '../../models/cursos';
 import { delay, tap } from 'rxjs/operators';
-import { environment } from '../../../../environments/environments';
+import { Curso } from '../models/cursos';
+import { environment } from '../../../environments/environments';
 
 @Injectable({
   providedIn: 'root'

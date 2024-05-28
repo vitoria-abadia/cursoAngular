@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { PocBaseComponent } from '../../poc-base/poc-base.component';
 import { Subscription, tap } from 'rxjs';
-import { EnviarValoresService } from '../../../enviar-valores.service';
+import { EnviarValoresService } from '../../../service/enviar-valores.service';
 
 @Component({
   selector: 'app-poc-unsub',

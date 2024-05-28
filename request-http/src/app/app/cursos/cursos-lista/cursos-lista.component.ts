@@ -3,10 +3,10 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EMPTY, Observable, Subject, catchError } from 'rxjs';
 
-import { CursoService } from '../service-cursos/curso.service';
 import { Curso } from '../../models/cursos';
 import { AlertModalComponent } from '../../shared/alert-modal/alert-modal.component';
 import { AlertModalService } from '../../shared/alert-modal.service';
+import { CursoService } from '../../service/curso.service';
 
 @Component({
   selector: 'app-cursos-lista',
@@ -40,15 +40,6 @@ export class CursosListaComponent implements OnInit {
           this.handleError();
           return EMPTY;
         })
-      );
-    this.service.list()
-      .pipe(
-        catchError(error => EMPTY)
-      )
-      .subscribe(
-        dados => {
-          console.log(dados);
-        },
       );
   }
 

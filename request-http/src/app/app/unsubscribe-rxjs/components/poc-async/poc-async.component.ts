@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { PocBaseComponent } from '../../poc-base/poc-base.component';
 import { Observable, map, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { EnviarValoresService } from '../../../enviar-valores.service';
+import { EnviarValoresService } from '../../../service/enviar-valores.service';
 
 @Component({
   selector: 'app-poc-async',
@@ -21,7 +21,7 @@ export class PocAsyncComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.valor$ = this.service.getValor()
       .pipe(tap(v => console.log(this.nome, v)))
-      
+
   }
 
   ngOnDestroy(): void {
