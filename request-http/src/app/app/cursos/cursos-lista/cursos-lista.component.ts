@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EMPTY, Observable, Subject, catchError } from 'rxjs';
 
 import { Curso } from '../../models/cursos';
-import { AlertModalComponent } from '../../shared/alert-modal/alert-modal.component';
 import { AlertModalService } from '../../shared/alert-modal.service';
 import { CursoService } from '../../service/curso.service';
-import { BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-cursos-lista',
@@ -24,9 +22,10 @@ export class CursosListaComponent implements OnInit {
   error$ = new Subject<boolean>();
 
   constructor(
-    private service: CursoService
-  ) // private alertModalService: AlertModalService,
-  // private modalService: BsModalService
+    private service: CursoService,
+    private router: Router,
+    private route: ActivatedRoute // private alertModalService: AlertModalService,
+  ) // private modalService: BsModalService
   {}
 
   ngOnInit(): void {
@@ -47,5 +46,9 @@ export class CursosListaComponent implements OnInit {
     // this.alertModalService.showAlertDanger(
     //   'Erro ao carregar cursos. Tente mais tarde',
     //   this.modalService)
+  }
+
+  onEdit(id: any) {
+    this.router.navigate(['editar', id], { relativeTo: this.route });
   }
 }

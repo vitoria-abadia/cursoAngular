@@ -10,6 +10,8 @@ import {
 import { CursoService } from '../../service/curso.service';
 import { AlertModalService } from '../../shared/alert-modal.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
+import { ActivatedRoute } from '@angular/router';
+import { map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-cursos-form',
@@ -28,11 +30,20 @@ export class CursosFormComponent implements OnInit {
     private cursoService: CursoService,
     private alertModalService: AlertModalService,
     private modalService: BsModalService,
-    private location: Location
+    private location: Location,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.route.params
+      .pipe(
+        map((params: any) => params['id']),
+        switchMap((id) => this.cursoService.loadByID(id))
+      )
+      .subscribe((curso) => this.updateForm(curso));
+
     this.form = this.formBuild.group({
+      id: [null],
       nome: [
         null,
         [
@@ -41,6 +52,13 @@ export class CursosFormComponent implements OnInit {
           Validators.maxLength(250),
         ],
       ],
+    });
+  }
+
+  updateForm(curso: any) {
+    this.form.patchValue({
+      id: curso.id,
+      nome: curso.nome,
     });
   }
 
