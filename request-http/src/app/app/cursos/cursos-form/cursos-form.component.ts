@@ -10,7 +10,7 @@ import {
 import { CursoService } from '../../service/curso.service';
 import { AlertModalService } from '../../shared/alert-modal.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, switchMap } from 'rxjs';
 
 @Component({
@@ -31,7 +31,8 @@ export class CursosFormComponent implements OnInit {
     private alertModalService: AlertModalService,
     private modalService: BsModalService,
     private location: Location,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -69,28 +70,36 @@ export class CursosFormComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
     console.log(this.form.value);
+
     if (this.form.valid) {
       console.log('submit');
-      this.cursoService.create(this.form.value).subscribe({
-        next: (success) => {
+
+      let msgSuccess = 'Curso criado com sucesso';
+      let msgError = 'Erro ao criar curso. Tente novamente';
+      if (this.form.value.id) {
+        msgSuccess = 'Curso atualizado com sucesso!';
+        msgError = 'Erro ao atualizar curso. Tente novamente';
+      }
+      this.cursoService.save(this.form.value).subscribe(
+        (success) => {
           this.alertModalService.showAlertSuccess(
-            'Curso criado com sucesso',
+            'Curso atualizado com sucesso', 
             this.modalService
           );
           this.location.back();
         },
-        error: (error) =>
+        (error) =>
           this.alertModalService.showAlertDanger(
-            'Erro ao criar curso. Tente novamente',
+            'Erro ao atualizar curso. Tente novamente', 
             this.modalService
-          ),
-        complete: () => console.log('request OK'),
-      });
+          )
+      );
     }
   }
 
   onCancel() {
     this.submitted = true;
     this.form.reset();
+    this.router.navigate(['cursos']);
   }
 }
